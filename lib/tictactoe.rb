@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Tic Tac Toe Game
 class Board
   attr_accessor :grid
 
@@ -6,7 +9,7 @@ class Board
   end
 
   def display
-    puts "  1 2 3"
+    puts '  1 2 3'
     @grid.each_with_index do |row, i|
       row_string = row.map { |cell| cell.nil? ? ' ' : cell }.join('|')
       puts "#{i + 1} #{row_string}"
@@ -24,8 +27,8 @@ class Board
 
   def winner
     (rows + columns + diagonals).each do |triple|
-      return 'X' if triple == ['X', 'X', 'X']
-      return 'O' if triple == ['O', 'O', 'O']
+      return 'X' if triple == %w[X X X]
+      return 'O' if triple == %w[O O O]
     end
     nil
   end
@@ -48,6 +51,7 @@ class Board
   end
 end
 
+# Player
 class Player
   attr_reader :name, :marker
 
@@ -62,6 +66,7 @@ class Player
   end
 end
 
+# Game
 class Game
   def initialize
     @board = Board.new
@@ -70,21 +75,30 @@ class Game
   end
 
   def play
-    @board.display
-
+    display_board
     loop do
-      row, col = @current_player.move
-      if valid_move?(row, col)
-        @board.grid[row - 1][col - 1] = @current_player.marker
-        @board.display
-        if winner? || tie?
-          puts end_message
-          break
-        end
-        switch_player
-      else
-        puts 'That is not a valid move. Try again.'
-      end
+      play_turn
+      break if winner? || tie?
+    end
+    puts end_message
+  end
+
+  def display_board
+    @board.display
+  end
+
+  def play_turn
+    row, col = @current_player.move
+    if valid_move?(row, col)
+      @board.grid[row - 1][col - 1] = @current_player.marker
+      display_board
+      # if winner? || tie?
+      #   puts end_message
+      #   break
+      # end
+      switch_player
+    else
+      puts 'That is not a valid move. Try again.'
     end
   end
 
@@ -115,4 +129,4 @@ class Game
   end
 end
 
-Game.new.play
+#Game.new.play
